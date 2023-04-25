@@ -16,15 +16,15 @@ const { uniqueNamesGenerator, animals, colors } = require('unique-names-generato
 
 class SnapdropServer {
 
-    constructor(port) {
+    constructor(server) {
         const WebSocket = require('ws');
-        this._wss = new WebSocket.Server({ port: port });
+        this._wss = new WebSocket.Server({ server });
         this._wss.on('connection', (socket, request) => this._onConnection(new Peer(socket, request)));
         this._wss.on('headers', (headers, response) => this._onHeaders(headers, response));
 
         this._rooms = {};
 
-        console.log('Snapdrop is running on port', port);
+        console.log('Snapdrop is running on server');
     }
 
     _onConnection(peer) {
@@ -182,6 +182,12 @@ class Peer {
     }
 
     _setIP(request) {
+		let r = request.url.match(/[?|&]room=([^&]*)/);
+		if (r !== null){
+			this.ip = r[1];
+			return;
+		}
+		
         if (request.headers['x-forwarded-for']) {
             this.ip = request.headers['x-forwarded-for'].split(/\s*,\s*/)[0];
         } else {
@@ -206,6 +212,7 @@ class Peer {
     }
 
     _setName(req) {
+        let user = req.url.match(/[?|&]user=([^&]*)/);
         let ua = parser(req.headers['user-agent']);
 
 
@@ -224,13 +231,13 @@ class Peer {
         if(!deviceName)
             deviceName = 'Unknown Device';
 
-        const displayName = uniqueNamesGenerator({
+        const displayName = user? user[1] : uniqueNamesGenerator({
             length: 2,
             separator: ' ',
             dictionaries: [colors, animals],
             style: 'capital',
             seed: this.id.hashCode()
-        })
+        });
 
         this.name = {
             model: ua.device.model,
@@ -289,4 +296,25 @@ Object.defineProperty(String.prototype, 'hashCode', {
   }
 });
 
-const server = new SnapdropServer(process.env.PORT || 3000);
+//const server = new SnapdropServer(process.env.PORT || 3000);
+
+const options = function(platform){
+	const fs = require('fs');
+	const path = require('path');
+	return {
+		key: fs.readFileSync(__dirname+'/server.key'),
+		cert: fs.readFileSync(__dirname+'/server.crt'),
+		ca: [ fs.readFileSync(__dirname+'/ca.crt') ],
+		requestCert: false,
+		port: (process.argv[2]? parseInt(process.argv[2]) : 9543),
+		webPath:path.join(__dirname, '../client'),
+		defWeb:'index.html',
+	}
+}(process.platform);
+
+
+// web Ò³Ãæ·þÎñ
+const httpServer = require('./httpd.js').start(options);
+
+// 
+const snapServer = new SnapdropServer(httpServer);
