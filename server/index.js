@@ -298,23 +298,27 @@ Object.defineProperty(String.prototype, 'hashCode', {
 
 //const server = new SnapdropServer(process.env.PORT || 3000);
 
-const options = function(platform){
+(function(){
 	const fs = require('fs');
 	const path = require('path');
-	return {
+	
+	const options = {
+		p: (process.argv[2]? parseInt(process.argv[2]) : 9543),
+		r: path.join(__dirname, '../client')
+	};
+	const ssl_options = {
 		key: fs.readFileSync(__dirname+'/server.key'),
 		cert: fs.readFileSync(__dirname+'/server.crt'),
 		ca: [ fs.readFileSync(__dirname+'/ca.crt') ],
-		requestCert: false,
-		port: (process.argv[2]? parseInt(process.argv[2]) : 9543),
-		webPath:path.join(__dirname, '../client'),
-		defWeb:'index.html',
-	}
-}(process.platform);
+		requestCert: false
+	};
 
 
-// web 页面服务
-const httpServer = require('./httpd.js').start(options);
+	// web 页面服务
+	const StaticServer = require('static-webserver');
+	const httpServer = (new StaticServer(options)).start(ssl_options);
 
-// 
-const snapServer = new SnapdropServer(httpServer);
+	// 
+	const snapServer = new SnapdropServer(httpServer);
+})();
+
