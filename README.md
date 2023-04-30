@@ -34,11 +34,11 @@ Thanks a lot for supporting free and open software!
 
 参考 https://github.com/Subash/mkcert
 
-安装mkcert；非全局安装 mkcert = node ./node_modules/mkcert/src/cli.js
+- 安装mkcert；非全局安装 mkcert = node ./node_modules/mkcert/src/cli.js<br>
 npm install -g mkcert 
 
-制作ca证书
+- 制作ca证书<br>
 mkcert create-ca --organization "LGN CA" --country-code "CN" --state "BeiJing" --locality "HaiDian" --validity 3652
     
-制作服务器证书，请把localhost改成您服务器的域名
+- 制作服务器证书，请把localhost改成您服务器的域名<br>
 create-cert --validity 365 --key "cerver.key" --cert "server.crt" --domains "localhost"
