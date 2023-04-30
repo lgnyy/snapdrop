@@ -42,3 +42,9 @@ mkcert create-ca --organization "LGN CA" --country-code "CN" --state "BeiJing" -
     
 - 制作服务器证书，请把localhost改成您服务器的域名<br>
 create-cert --validity 365 --key "cerver.key" --cert "server.crt" --domains "localhost"
+
+## 配置turn服务器
+
+参考 https://github.com/coturn/coturn
+
+修改 client/scripts/network.js文件最后 RTCPeer.config
