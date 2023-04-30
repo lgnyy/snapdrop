@@ -30,5 +30,15 @@ Alternatively, you can become a [Github Sponsor](https://github.com/sponsors/Rob
 
 Thanks a lot for supporting free and open software!
 
+## 制作https服务器证书
 
- 
+参考 https://github.com/Subash/mkcert
+
+安装mkcert；非全局安装 mkcert = node ./node_modules/mkcert/src/cli.js
+npm install -g mkcert 
+
+制作ca证书
+mkcert create-ca --organization "LGN CA" --country-code "CN" --state "BeiJing" --locality "HaiDian" --validity 3652
+    
+制作服务器证书，请把localhost改成您服务器的域名
+create-cert --validity 365 --key "cerver.key" --cert "server.crt" --domains "localhost"
