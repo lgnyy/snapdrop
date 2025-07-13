@@ -519,10 +519,18 @@ class Events {
     }
 }
 
+function get_iceServers(){
+	const searchParams = new URLSearchParams(location.search);
+	const key = searchParams.get('key');
+	if (key) {
+		return [{ urls: 'turn:123.030618.xyz:8478', username: 'ytest1',credential: 'diatesgath' + key }];
+	}else{
+		return [{ urls: 'stun:123.030618.xyz:8478'}, {urls: 'stun.l.google.com'}];
+	}
+}
+	
 
 RTCPeer.config = {
     'sdpSemantics': 'unified-plan',
-    'iceServers': [{
-        urls: 'stun:stun.l.google.com:19302'
-    }]
+    'iceServers': get_iceServers()
 }

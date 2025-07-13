@@ -306,10 +306,11 @@ Object.defineProperty(String.prototype, 'hashCode', {
 		p: (process.argv[2]? parseInt(process.argv[2]) : 9543),
 		r: path.join(__dirname, '../client')
 	};
+	const cfgPath = process.argv[3] || __dirname;
 	const ssl_options = {
-		key: fs.readFileSync(__dirname+'/server.key'),
-		cert: fs.readFileSync(__dirname+'/server.crt'),
-		ca: [ fs.readFileSync(__dirname+'/ca.crt') ],
+		key: fs.readFileSync(cfgPath+'/server.key'),
+		cert: fs.readFileSync(cfgPath+'/server.crt'),
+		//ca: [ fs.readFileSync(cfgPath+'/ca.crt') ],
 		requestCert: false
 	};
 
