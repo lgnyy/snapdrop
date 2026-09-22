@@ -1,0 +1,17 @@
+name = "webdrop"
+main = "src/index.js"
+compatibility_date = "2025-03-01"
+
+# Everything in client/ is served as static assets (index.html, scripts,
+# images, sounds). Requests that match no asset -- i.e. /server/* -- fall
+# through to the Worker below.
+[assets]
+directory = "./client"
+
+[[durable_objects.bindings]]
+name = "ROOM"
+class_name = "RoomDO"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["RoomDO"]

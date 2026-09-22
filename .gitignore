@@ -2,3 +2,5 @@ node_modules
 .DS_Store
 fqdn.env
 /docker/certs
+.wrangler
+.dev.vars
