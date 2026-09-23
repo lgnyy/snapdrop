@@ -29,6 +29,13 @@ export default {
 // CF-Connecting-IP; IPv6 addresses are truncated to their /64 prefix so
 // devices on the same network still see each other.
 function roomKeyFromRequest(request) {
+    // 优先从 URL 查询参数中取 room
+    const r = request.url.match(/[?&]room=([^&]*)/);
+    if (r !== null) {
+        return decodeURIComponent(r[1]);
+    }
+
+     // 否则回退到基于 IP 的逻辑
     const ip = request.headers.get('CF-Connecting-IP')
         || (request.headers.get('X-Forwarded-For') || '').split(/\s*,\s*/)[0]
         || 'local';

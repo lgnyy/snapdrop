@@ -20,7 +20,7 @@ const ANIMALS = [
     'turtle', 'wolf', 'zebra',
 ];
 
-export function describeUserAgent(userAgent, seed) {
+export function describeUserAgent(userAgent, seed, userName) {
     const ua = parseUserAgent(userAgent || '');
 
     let deviceName = '';
@@ -35,7 +35,7 @@ export function describeUserAgent(userAgent, seed) {
         browser: ua.browser,
         type: ua.type,
         deviceName,
-        displayName: seededDisplayName(seed),
+        displayName: userName || seededDisplayName(seed),
     };
 }
 

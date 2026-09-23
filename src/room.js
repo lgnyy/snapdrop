@@ -23,6 +23,7 @@ export class RoomDO {
 
         const url = new URL(request.url);
         const rtcSupported = url.pathname.includes('webrtc');
+        const userName = url.searchParams.get('user');
 
         // reuse the peer id from the cookie, hand out a new one otherwise
         let peerId = peerIdFromCookie(request.headers.get('Cookie'));
@@ -31,7 +32,7 @@ export class RoomDO {
             peerId = crypto.randomUUID();
             setCookie = `peerid=${peerId}; SameSite=Strict; Secure`;
         }
-        const name = describeUserAgent(request.headers.get('User-Agent'), peerId);
+        const name = describeUserAgent(request.headers.get('User-Agent'), peerId, userName);
         const info = { id: peerId, name, rtcSupported, lastBeat: Date.now() };
 
         const [client, server] = Object.values(new WebSocketPair());
