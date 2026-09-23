@@ -1,78 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <!-- Web App Config -->
-    <title>Snapdrop</title>
+    <title>Snapdrop + TURN config</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#3367d6">
     <meta name="color-scheme" content="dark light">
     <meta name="apple-mobile-web-app-capable" content="no">
     <meta name="apple-mobile-web-app-title" content="Snapdrop">
-    <!-- Descriptions -->
     <meta name="description" content="Instantly share images, videos, PDFs, and links with people nearby. Peer2Peer and Open Source. No Setup, No Signup.">
     <meta name="keywords" content="File, Transfer, Share, Peer2Peer">
     <meta name="author" content="RobinLinus">
-    <meta property="og:title" content="Snapdrop">
-    <meta property="og:type" content="article">
-    <meta property="og:url" content="https://snapdrop.net/">
-    <meta property="og:author" content="https://facebook.com/RobinLinus">
-    <meta name="twitter:author" content="@RobinLinus">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:description" content="Instantly share images, videos, PDFs, and links with people nearby. Peer2Peer and Open Source. No Setup, No Signup.">
-    <meta name="og:description" content="Instantly share images, videos, PDFs, and links with people nearby. Peer2Peer and Open Source. No Setup, No Signup.">
-    <!-- Icons -->
     <link rel="icon" sizes="96x96" href="images/favicon-96x96.png">
     <link rel="shortcut icon" href="images/favicon-96x96.png">
     <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-    <meta name="msapplication-TileImage" content="images/mstile-150x150.png">
-    <link rel="fluid-icon" type="image/png" href="images/android-chrome-192x192.png">
-    <meta name="twitter:image" content="https://snapdrop.net/images/twitter-stream.jpg">
-    <meta property="og:image" content="https://snapdrop.net/images/twitter-stream.jpg">
-    <!-- Resources -->
     <link rel="stylesheet" type="text/css" href="styles.css">
     <link rel="manifest" href="manifest.json">
 </head>
 
 <body translate="no">
     <header class="row-reverse">
-        <a href="#about" class="icon-button" title="About Snapdrop">
-            <svg class="icon">
-                <use xlink:href="#info-outline" />
+        <!-- TURN 配置入口: 齿轮/设置图标 -->
+        <a href="#" id="turnSettingsBtn" class="icon-button" title="Configure TURN server">
+            <svg class="icon" viewBox="0 0 24 24">
+                <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
             </svg>
         </a>
-        <a href="#" id="theme" class="icon-button" title="Switch Darkmode/Lightmode" >
-            <svg class="icon">
-                <use xlink:href="#icon-theme" />
-            </svg>
+        <a href="#about" class="icon-button" title="About Snapdrop">
+            <svg class="icon"><use xlink:href="#info-outline" /></svg>
         </a>
         <a href="#" id="notification" class="icon-button" title="Enable Notifications" hidden>
-            <svg class="icon">
-                <use xlink:href="#notifications" />
-            </svg>
+            <svg class="icon"><use xlink:href="#notifications" /></svg>
         </a>
         <a href="#" id="install" class="icon-button" title="Install Snapdrop" hidden>
-            <svg class="icon">
-                <use xlink:href="#homescreen" />
-            </svg>
+            <svg class="icon"><use xlink:href="#homescreen" /></svg>
         </a>
     </header>
+
     <!-- Peers -->
     <x-peers class="center"></x-peers>
     <x-no-peers>
         <h2>Open Snapdrop on other devices to send files</h2>
     </x-no-peers>
     <x-instructions desktop="Click to send files or right click to send a message" mobile="Tap to send files or long tap to send a message"></x-instructions>
+
     <!-- Footer -->
     <footer class="column">
-        <svg class="icon logo">
-            <use xlink:href="#wifi-tethering" />
-        </svg>
+        <svg class="icon logo"><use xlink:href="#wifi-tethering" /></svg>
         <div id="displayName" placeholder="The easiest way to transfer data across devices"></div>
         <div class="font-body2">You can be discovered by everyone on this network</div>
     </footer>
+
     <!-- Receive Dialog -->
     <x-dialog id="receiveDialog">
         <x-background class="full center">
@@ -94,6 +73,7 @@
             </x-paper>
         </x-background>
     </x-dialog>
+
     <!-- Send Text Dialog -->
     <x-dialog id="sendTextDialog">
         <form action="#">
@@ -109,6 +89,7 @@
             </x-background>
         </form>
     </x-dialog>
+
     <!-- Receive Text Dialog -->
     <x-dialog id="receiveTextDialog">
         <x-background class="full center">
@@ -122,51 +103,74 @@
             </x-paper>
         </x-background>
     </x-dialog>
+
+    <!-- TURN 配置对话框 -->
+    <x-dialog id="turnConfigDialog">
+        <x-background class="full center">
+            <x-paper shadow="2">
+                <h3 style="margin-top:0;">TURN / STUN 配置</h3>
+                <div class="font-body2" style="margin-bottom:16px; opacity:0.7;">自定义 ICE 服务器，用于 NAT 穿透。留空则使用默认服务器。</div>
+                
+                <div class="turn-field">
+                    <label for="turnUrl">TURN URL</label>
+                    <input type="text" id="turnUrl" placeholder="例如: turn:turn.example.com:3478" autocomplete="off">
+                </div>
+                <div class="turn-field">
+                    <label for="turnUsername">用户名 (Username)</label>
+                    <input type="text" id="turnUsername" placeholder="username" autocomplete="off">
+                </div>
+                <div class="turn-field">
+                    <label for="turnCredential">密码 (Credential)</label>
+                    <input type="password" id="turnCredential" placeholder="credential" autocomplete="off">
+                </div>
+                <div class="turn-hint">
+                    配置将保存在浏览器 localStorage 中，仅对当前设备生效。<br>
+                    若只填写 TURN URL 不填用户名密码，也会作为 STUN 使用。
+                </div>
+                <div class="turn-actions">
+                    <button class="button" id="turnResetBtn" close>重置默认</button>
+                    <button class="button" id="turnCancelBtn" close>取消</button>
+                    <button class="button primary" id="turnSaveBtn" close>保存</button>
+                </div>
+            </x-paper>
+        </x-background>
+    </x-dialog>
+
     <!-- Toast -->
     <div class="toast-container full center">
         <x-toast class="row" shadow="1" id="toast">File Transfer Completed</x-toast>
     </div>
-    <!-- About Page -->
+
+    <!-- About Page (保持不变) -->
     <x-about id="about" class="full center column">
         <section class="center column fade-in">
             <header class="row-reverse">
                 <a href="#" class="close icon-button">
-                    <svg class="icon">
-                        <use xlink:href="#close" />
-                    </svg>
+                    <svg class="icon"><use xlink:href="#close" /></svg>
                 </a>
             </header>
-            <svg class="icon logo">
-                <use xlink:href="#wifi-tethering" />
-            </svg>
+            <svg class="icon logo"><use xlink:href="#wifi-tethering" /></svg>
             <h1>Snapdrop</h1>
             <div class="font-subheading">The easiest way to transfer files across devices</div>
             <div class="row">
                 <a class="icon-button" target="_blank" href="https://github.com/RobinLinus/snapdrop" title="Snapdrop on Github" rel="noreferrer">
-                    <svg class="icon">
-                        <use xlink:href="#github" />
-                    </svg>
+                    <svg class="icon"><use xlink:href="#github" /></svg>
                 </a>
                 <a class="icon-button" target="_blank" href="https://www.paypal.com/donate?hosted_button_id=FTP9DXUR7LA7Q" title="Help cover the server costs!" rel="noreferrer">
-                    <svg class="icon">
-                        <use xlink:href="#monetarization" />
-                    </svg>
+                    <svg class="icon"><use xlink:href="#monetarization" /></svg>
                 </a>
                 <a class="icon-button" target="_blank" href="https://twitter.com/intent/tweet?text=https://snapdrop.net%20by%20@robin_linus%20&" title="Tweet about Snapdrop" rel="noreferrer">
-                    <svg class="icon">
-                        <use xlink:href="#twitter" />
-                    </svg>
+                    <svg class="icon"><use xlink:href="#twitter" /></svg>
                 </a>
                 <a class="icon-button" target="_blank" href="https://github.com/RobinLinus/snapdrop/blob/master/docs/faq.md" title="Frequently asked questions" rel="noreferrer">
-                    <svg class="icon">
-                        <use xlink:href="#help-outline" />
-                    </svg>
+                    <svg class="icon"><use xlink:href="#help-outline" /></svg>
                 </a>
             </div>
         </section>
         <x-background></x-background>
     </x-about>
-    <!-- SVG Icon Library -->
+
+    <!-- SVG Icon Library (保持不变) -->
     <svg style="display: none;">
         <symbol id=wifi-tethering viewBox="0 0 24 24">
             <path d="M12 11c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 2c0-3.31-2.69-6-6-6s-6 2.69-6 6c0 2.22 1.21 4.15 3 5.19l1-1.74c-1.19-.7-2-1.97-2-3.45 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.48-.81 2.75-2 3.45l1 1.74c1.79-1.04 3-2.97 3-5.19zM12 3C6.48 3 2 7.48 2 13c0 3.7 2.01 6.92 4.99 8.65l1-1.73C5.61 18.53 4 15.96 4 13c0-4.42 3.58-8 8-8s8 3.58 8 8c0 2.96-1.61 5.53-4 6.92l1 1.73c2.99-1.73 5-4.95 5-8.65 0-5.52-4.48-10-10-10z"></path>
@@ -207,21 +211,16 @@
             <path d="M0 0h24v24H0z" fill="none" />
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z" />
         </symbol>
-        <symbol id="icon-theme" viewBox="0 0 24 24">
-         <rect fill="none" height="24" width="24"/><path d="M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36c-0.98,1.37-2.58,2.26-4.4,2.26 c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"/>
-        </symbol>
     </svg>
-    <!-- Scripts -->
+
+    <!-- 脚本 -->
     <script src="scripts/network.js"></script>
     <script src="scripts/ui.js"></script>
-    <script src="scripts/theme.js" async></script>
     <script src="scripts/clipboard.js" async></script>
-    <!-- Sounds -->
     <audio id="blop" autobuffer="true">
         <source src="sounds/blop.mp3" type="audio/mpeg">
         <source src="sounds/blop.ogg" type="audio/ogg">
     </audio>
-    <!-- no script -->
     <noscript>
         <x-noscript class="full center column">
             <h1>Enable JavaScript</h1>
@@ -233,10 +232,10 @@
             color: white;
             z-index: 2;
         }
-
         a[href="#info"] {
             color: white;
         }
         </style>
     </noscript>
 </body>
+</html>

@@ -298,28 +298,23 @@ Object.defineProperty(String.prototype, 'hashCode', {
 
 //const server = new SnapdropServer(process.env.PORT || 3000);
 
-(function(){
+const options = function(platform){
 	const fs = require('fs');
 	const path = require('path');
-	
-	const options = {
-		p: (process.argv[2]? parseInt(process.argv[2]) : 9543),
-		r: path.join(__dirname, '../client')
-	};
-	const cfgPath = process.argv[3] || __dirname;
-	const ssl_options = {
-		key: fs.readFileSync(cfgPath+'/server.key'),
-		cert: fs.readFileSync(cfgPath+'/server.crt'),
-		//ca: [ fs.readFileSync(cfgPath+'/ca.crt') ],
-		requestCert: false
-	};
+	return {
+		key: fs.readFileSync(__dirname+'/server.key'),
+		cert: fs.readFileSync(__dirname+'/server.crt'),
+		ca: [ fs.readFileSync(__dirname+'/ca.crt') ],
+		requestCert: false,
+		port: (process.argv[2]? parseInt(process.argv[2]) : 9543),
+		webPath:path.join(__dirname, '../client'),
+		defWeb:'index.html',
+	}
+}(process.platform);
 
 
-	// web “≥√Ê∑˛ŒÒ
-	const StaticServer = require('static-webserver');
-	const httpServer = (new StaticServer(options)).start(ssl_options);
+// web È°µÈù¢ÊúçÂä°
+const httpServer = require('./httpd.js').start(options);
 
-	// 
-	const snapServer = new SnapdropServer(httpServer);
-})();
-
+// 
+const snapServer = new SnapdropServer(httpServer);

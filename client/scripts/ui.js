@@ -526,6 +526,97 @@ class WebShareTargetUI {
 }
 
 
+class TurnConfigUI extends Dialog {
+    constructor() {
+		super('turnConfigDialog');  // 继承 Dialog，自动绑定 [close] 元素
+        this.$dialog = $('turnConfigDialog');
+        this.$url = $('turnUrl');
+        this.$username = $('turnUsername');
+        this.$credential = $('turnCredential');
+
+        // 打开配置窗口
+        const $openBtn = $('turnSettingsBtn');
+        if ($openBtn) {
+            $openBtn.addEventListener('click', e => {
+                e.preventDefault();
+                this._open();
+            });
+        }
+
+        // 保存
+        $('turnSaveBtn').addEventListener('click', e => {
+            e.preventDefault();
+            this._save();
+        });
+
+        // 重置为默认
+        $('turnResetBtn').addEventListener('click', e => {
+            e.preventDefault();
+            this._reset();
+        });
+
+        // 取消（关闭即可，无需操作，但清空密码输入便于安全）
+        $('turnCancelBtn').addEventListener('click', e => {
+            // Dialog 的 close 属性已处理关闭，这里只清空敏感字段
+            this.$credential.value = '';
+        });
+
+        // 初始化时同步一次当前状态到 UI（可选）
+        this._syncFromStorage();
+    }
+
+    _syncFromStorage() {
+        const cfg = window.TurnConfig.getStoredTurnConfig();
+        if (!cfg) return;
+        this.$url.value = cfg.url || '';
+        this.$username.value = cfg.username || '';
+        this.$credential.value = cfg.credential || '';
+    }
+
+    _open() {
+        // 每次打开时从 localStorage 重新加载，保证显示最新值
+        this._syncFromStorage();
+        this.$dialog.setAttribute('show', 1);
+        // 聚焦第一个输入框
+        setTimeout(() => this.$url.focus(), 50);
+    }
+
+    _save() {
+        const url = this.$url.value.trim();
+        const username = this.$username.value.trim();
+        const credential = this.$credential.value;
+
+        if (!url) {
+            // 没有 URL 视为清空配置，回退默认
+            window.TurnConfig.clearTurnConfig();
+            window.TurnConfig.refreshRtcConfig();
+            Events.fire('notify-user', '已恢复默认 ICE 服务器');
+            return;
+        }
+
+        // 简单校验协议
+        if (!/^(turn|turns|stun|stuns):/i.test(url) && !/^[\w.-]+(:\d+)?$/.test(url)) {
+            Events.fire('notify-user', 'TURN URL 格式无效');
+            return;
+        }
+
+        window.TurnConfig.saveTurnConfig({ url, username, credential });
+        window.TurnConfig.refreshRtcConfig();
+        Events.fire('notify-user', 'TURN 配置已保存，新连接将生效');
+    }
+
+    _reset() {
+        this.$url.value = '';
+        this.$username.value = '';
+        this.$credential.value = '';
+        window.TurnConfig.clearTurnConfig();
+        window.TurnConfig.refreshRtcConfig();
+        Events.fire('notify-user', '已恢复默认 ICE 服务器');
+    }
+}
+
+
+
 class Snapdrop {
     constructor() {
         const server = new ServerConnection();
@@ -539,6 +630,7 @@ class Snapdrop {
             const notifications = new Notifications();
             const networkStatusUI = new NetworkStatusUI();
             const webShareTargetUI = new WebShareTargetUI();
+            const turnConfigUI = new TurnConfigUI();
         });
     }
 }
@@ -596,7 +688,7 @@ Events.on('load', () => {
 
     function drawCircle(radius) {
         ctx.beginPath();
-        let color = Math.round(255 * (1 - radius / Math.max(w, h)));
+        let color = Math.round(197 * (1 - radius / Math.max(w, h)));
         ctx.strokeStyle = 'rgba(' + color + ',' + color + ',' + color + ',0.1)';
         ctx.arc(x0, y0, radius, 0, 2 * Math.PI);
         ctx.stroke();

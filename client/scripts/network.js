@@ -519,18 +519,118 @@ class Events {
     }
 }
 
-function get_iceServers(){
-	const searchParams = new URLSearchParams(location.search);
-	const key = searchParams.get('key');
-	if (key) {
-		return [{ urls: 'turn:123.030618.xyz:8478', username: 'ytest1',credential: 'diatesgath' + key }];
-	}else{
-		return [{ urls: 'stun:123.030618.xyz:8478'}, {urls: 'stun.l.google.com'}];
-	}
-}
-	
 
-RTCPeer.config = {
-    'sdpSemantics': 'unified-plan',
-    'iceServers': get_iceServers()
+//RTCPeer.config = {
+//  'sdpSemantics': 'unified-plan',
+//  'iceServers': [{
+//      urls: 'stun:stun.l.google.com:19302'
+//  }]
+//}
+
+// ========== TURN / ICE 配置管理 ==========
+const ICE_CONFIG_KEY = 'snapdrop_ice_config';
+
+/**
+ * 从 localStorage 读取用户自定义的 TURN/STUN 配置
+ * @returns {{url: string, username: string, credential: string} | null}
+ */
+function getStoredTurnConfig() {
+    try {
+        const raw = localStorage.getItem(ICE_CONFIG_KEY);
+        if (!raw) return null;
+        const cfg = JSON.parse(raw);
+        if (!cfg || !cfg.url) return null;
+        return cfg;
+    } catch (e) {
+        console.warn('读取 TURN 配置失败:', e);
+        return null;
+    }
 }
+
+/**
+ * 保存 TURN 配置到 localStorage
+ * @param {{url: string, username: string, credential: string}} cfg
+ */
+function saveTurnConfig(cfg) {
+    try {
+        localStorage.setItem(ICE_CONFIG_KEY, JSON.stringify(cfg));
+    } catch (e) {
+        console.warn('保存 TURN 配置失败:', e);
+    }
+}
+
+/**
+ * 清除自定义 TURN 配置
+ */
+function clearTurnConfig() {
+    try {
+        localStorage.removeItem(ICE_CONFIG_KEY);
+    } catch (e) {
+        console.warn('清除 TURN 配置失败:', e);
+    }
+}
+
+/**
+ * 根据存储的配置生成 ICE 服务器列表
+ * - 若用户配置了 TURN url，则使用 TURN（带 username/credential）
+ * - 否则回退到默认 STUN 服务器
+ */
+function get_iceServers() {
+    const cfg = getStoredTurnConfig();
+
+    if (cfg && cfg.url) {
+        const url = cfg.url.trim();
+
+        // 自动补全协议前缀：如果用户只填了 host:port，默认按 turn: 处理
+        let urls = url;
+        if (!/^(turn|turns|stun|stuns):/i.test(urls)) {
+            urls = 'turn:' + urls;
+        }
+
+        const server = { urls: urls };
+
+        // 只有 TURN 才需要 username / credential
+        if (/^turns?:/i.test(urls)) {
+            if (cfg.username) server.username = cfg.username;
+            if (cfg.credential) server.credential = cfg.credential;
+        }
+
+        // 同时保留默认的 STUN 作为补充，提高连接成功率
+        return [
+            server,
+            { urls: 'stun:stun.l.google.com:19302' }
+        ];
+    }
+
+    // 默认配置
+    return [
+        { urls: 'stun:stun.l.google.com:19302' }
+    ];
+}
+
+/**
+ * 刷新 RTC 配置（在用户保存新配置后调用）
+ * 注意：已存在的 PeerConnection 不会自动更新，需要重新加载页面或重建连接
+ */
+function refreshRtcConfig() {
+    RTCPeer.config = {
+        sdpSemantics: 'unified-plan',
+        iceServers: get_iceServers()
+    };
+    console.log('RTC config 已更新:', RTCPeer.config);
+}
+
+// 初始化 RTC 配置
+RTCPeer.config = {
+    sdpSemantics: 'unified-plan',
+    iceServers: get_iceServers()
+};
+
+// 暴露到全局，供 ui.js 调用
+window.TurnConfig = {
+    getStoredTurnConfig,
+    saveTurnConfig,
+    clearTurnConfig,
+    refreshRtcConfig,
+    get_iceServers
+};
